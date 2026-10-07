@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SKILLS_DIR="$ROOT/skills"
+
+usage() {
+  cat <<'EOF'
+Uso:
+  skillsctl update
+  skillsctl link-global [--force] [skill...]
+  skillsctl link-project <proyecto> [--force] [skill...]
+  skillsctl copy-project <proyecto> [--force] [skill...]
+  skillsctl sync-globals [directorio]
+  skillsctl sync-project <proyecto>
+  skillsctl status
+
+Sin una lista de skills, link-global/link-project/copy-project instalan todas.
+EOF
+}
+
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
+
+skill_source() {
+  local name="$1"
+  local source="$SKILLS_DIR/$name"
+  [[ -f "$source/SKILL.md" ]] || die "no existe la skill '$name'"
+  printf '%s\n' "$source"
+}
+
+all_skill_names() {
+  local source
+  for source in "$SKILLS_DIR"/*; do
+    [[ -f "$source/SKILL.md" ]] || continue
+    basename "$source"
+  done
+}
+
+parse_install_args() {
+  FORCE=false
+  SKILL_NAMES=()
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      --force) FORCE=true ;;
+      --*) die "opción desconocida: $arg" ;;
+      *) SKILL_NAMES+=("$arg") ;;
+    esac
+  done
+
+  if ((${#SKILL_NAMES[@]} == 0)); then
+    mapfile -t SKILL_NAMES < <(all_skill_names)
+  fi
+}
+
+link_skills() {
+  local destination="$1"
+  shift
+  parse_install_args "$@"
+  mkdir -p "$destination"
+
+  local name source target resolved
+  for name in "${SKILL_NAMES[@]}"; do
+    source="$(skill_source "$name")"
+    target="$destination/$name"
+
+    if [[ -L "$target" ]]; then
+      resolved="$(readlink -f "$target" || true)"
+      if [[ "$resolved" == "$source" ]]; then
+        printf 'ok      %s\n' "$name"
+        continue
+      fi
+      ln -sfn "$source" "$target"
+      printf 'enlace  %s -> %s\n' "$name" "$source"
+      continue
+    fi
+
+    if [[ -e "$target" ]]; then
+      if [[ "$FORCE" != true ]]; then
+        printf 'omite   %s (ya existe; usa --force)\n' "$name" >&2
+        continue
+      fi
+      rm -rf "$target"
+    fi
+
+    ln -s "$source" "$target"
+    printf 'enlace  %s -> %s\n' "$name" "$source"
+  done
+}
+
+copy_skills() {
+  local destination="$1"
+  shift
+  parse_install_args "$@"
+  mkdir -p "$destination"
+
+  local name source target
+  for name in "${SKILL_NAMES[@]}"; do
+    source="$(skill_source "$name")"
+    target="$destination/$name"
+
+    if [[ -e "$target" || -L "$target" ]]; then
+      if [[ "$FORCE" != true ]]; then
+        printf 'omite   %s (ya existe; usa --force)\n' "$name" >&2
+        continue
+      fi
+      rm -rf "$target"
+    fi
+
+    cp -aL "$source" "$target"
+    printf 'copia   %s -> %s\n' "$name" "$target"
+  done
+}
+
+sync_from() {
+  local source_dir="$1"
+  [[ -d "$source_dir" ]] || die "no existe el directorio: $source_dir"
+  mkdir -p "$SKILLS_DIR"
+
+  local source name destination resolved
+  local imported=0
+  local skipped=0
+  for source in "$source_dir"/*; do
+    [[ -f "$source/SKILL.md" ]] || continue
+    name="$(basename "$source")"
+    destination="$SKILLS_DIR/$name"
+    resolved="$(readlink -f "$source")"
+
+    case "$resolved" in
+      "$SKILLS_DIR"|"$SKILLS_DIR"/*)
+        printf 'omite   %s (ya enlazada a este repo)\n' "$name"
+        skipped=$((skipped + 1))
+        continue
+        ;;
+    esac
+
+    rm -rf "$destination"
+    cp -aL "$source" "$destination"
+    printf 'importa %s\n' "$name"
+    imported=$((imported + 1))
+  done
+
+  printf '\nImportadas: %d · Omitidas: %d\n' "$imported" "$skipped"
+}
+
+command="${1:-}"
+[[ -n "$command" ]] || {
+  usage
+  exit 1
+}
+shift
+
+case "$command" in
+  update)
+    git -C "$ROOT" pull --ff-only
+    ;;
+  link-global)
+    link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" "$@"
+    ;;
+  link-project)
+    (($# >= 1)) || die "falta la ruta del proyecto"
+    project="$1"
+    shift
+    link_skills "$(cd "$project" && pwd)/.cursor/skills" "$@"
+    ;;
+  copy-project)
+    (($# >= 1)) || die "falta la ruta del proyecto"
+    project="$1"
+    shift
+    copy_skills "$(cd "$project" && pwd)/.cursor/skills" "$@"
+    ;;
+  sync-globals)
+    sync_from "${1:-$HOME/.agents/skills}"
+    ;;
+  sync-project)
+    (($# == 1)) || die "indica exactamente una ruta de proyecto"
+    project="$(cd "$1" && pwd)"
+    sync_from "$project/.cursor/skills"
+    ;;
+  status)
+    git -C "$ROOT" status --short
+    ;;
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    usage >&2
+    die "comando desconocido: $command"
+    ;;
+esac

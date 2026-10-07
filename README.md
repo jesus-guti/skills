@@ -63,10 +63,26 @@ Importar las skills propias de un proyecto, por ejemplo Rely:
 skillsctl sync-project /home/jesus-siali/github/siali/rely
 ```
 
+Actualizar las colecciones externas configuradas:
+
+```bash
+skillsctl sync-external
+```
+
+Actualmente sincroniza:
+
+- [`pbakaus/impeccable`](https://github.com/pbakaus/impeccable)
+- [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill)
+- [`emilkowalski/skill`](https://github.com/emilkowalski/skill)
+
+Los commits importados quedan registrados en `SOURCES.lock`. La skill
+`prototype` de Emil se instala como `emil-prototype` para no sustituir la
+skill homónima que ya existía.
+
 Después:
 
 ```bash
-git add skills
+git add skills SOURCES.lock
 git commit -m "sync skills"
 git push
 ```
@@ -85,5 +101,6 @@ skillsctl link-project <proyecto> [--force] [skill...]
 skillsctl copy-project <proyecto> [--force] [skill...]
 skillsctl sync-globals [directorio]
 skillsctl sync-project <proyecto>
+skillsctl sync-external
 skillsctl status
 ```

@@ -13,6 +13,7 @@ Uso:
   skillsctl copy-project <proyecto> [--force] [skill...]
   skillsctl sync-globals [directorio]
   skillsctl sync-project <proyecto>
+  skillsctl sync-external
   skillsctl status
 
 Sin una lista de skills, link-global/link-project/copy-project instalan todas.
@@ -146,6 +147,49 @@ sync_from() {
   printf '\nImportadas: %d · Omitidas: %d\n' "$imported" "$skipped"
 }
 
+sync_external() {
+  local temp impeccable taste emil
+  temp="$(mktemp -d)"
+  trap 'rm -rf "$temp"' EXIT
+  impeccable="$temp/impeccable"
+  taste="$temp/taste-skill"
+  emil="$temp/emil-skill"
+
+  git clone --quiet --depth 1 https://github.com/pbakaus/impeccable.git "$impeccable"
+  git clone --quiet --depth 1 https://github.com/Leonxlnx/taste-skill.git "$taste"
+  git clone --quiet --depth 1 https://github.com/emilkowalski/skill.git "$emil"
+
+  sync_from "$impeccable/.agents/skills"
+  sync_from "$taste/skills"
+
+  # Ya existe una skill distinta llamada "prototype"; conservamos ambas.
+  mv "$emil/skills/prototype" "$emil/skills/emil-prototype"
+  python3 - "$emil/skills/emil-prototype/SKILL.md" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+old = "\nname: prototype\n"
+if old not in text:
+    raise SystemExit("No se encontró el nombre esperado en prototype de Emil")
+path.write_text(text.replace(old, "\nname: emil-prototype\n", 1), encoding="utf-8")
+PY
+  sync_from "$emil/skills"
+
+  {
+    printf 'pbakaus/impeccable\t%s\t.agents/skills\n' \
+      "$(git -C "$impeccable" rev-parse HEAD)"
+    printf 'Leonxlnx/taste-skill\t%s\tskills\n' \
+      "$(git -C "$taste" rev-parse HEAD)"
+    printf 'emilkowalski/skill\t%s\tskills\n' \
+      "$(git -C "$emil" rev-parse HEAD)"
+  } > "$ROOT/SOURCES.lock"
+
+  rm -rf "$temp"
+  trap - EXIT
+}
+
 command="${1:-}"
 [[ -n "$command" ]] || {
   usage
@@ -181,6 +225,11 @@ case "$command" in
     (($# == 1)) || die "indica exactamente una ruta de proyecto"
     project="$(cd "$1" && pwd)"
     sync_from "$project/.cursor/skills"
+    ;;
+  sync-external)
+    (($# == 0)) || die "sync-external no acepta argumentos"
+    sync_external
+    link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" --force
     ;;
   status)
     git -C "$ROOT" status --short

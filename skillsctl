@@ -15,6 +15,7 @@ Uso:
   skillsctl sync-project <proyecto>
   skillsctl sync-external
   skillsctl sync-matt
+  skillsctl sync-ecc
   skillsctl status
 
 Sin una lista de skills, link-global/link-project/copy-project instalan todas.
@@ -221,6 +222,46 @@ sync_matt() {
   done
 }
 
+retire_missing() {
+  local manifest="$1"
+  local current="$2"
+  local destination="${AGENT_SKILLS_HOME:-$HOME/.agents/skills}"
+  local name target resolved
+  [[ -f "$manifest" ]] || return 0
+  while IFS= read -r name; do
+    [[ -n "$name" ]] || continue
+    if grep -Fxq "$name" "$current"; then
+      continue
+    fi
+    rm -rf "$SKILLS_DIR/$name"
+    printf 'retira  %s\n' "$name"
+    target="$destination/$name"
+    [[ -L "$target" ]] || continue
+    resolved="$(readlink "$target")"
+    [[ "$resolved" == "$SKILLS_DIR/$name" ]] || continue
+    rm "$target"
+  done < "$manifest"
+}
+
+sync_ecc() {
+  local temp repo current
+  temp="$(mktemp -d)"
+  repo="$temp/ecc"
+  current="$temp/current-skills"
+  git clone --quiet --depth 1 --filter=blob:none --sparse \
+    https://github.com/affaan-m/ecc.git "$repo"
+  git -C "$repo" sparse-checkout set skills
+  sync_from "$repo/skills"
+  find "$repo/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -printf '%h\n' |
+    xargs -n1 basename |
+    sort -u > "$current"
+  mkdir -p "$ROOT/sources"
+  retire_missing "$ROOT/sources/affaan-m-ecc.txt" "$current"
+  cp "$current" "$ROOT/sources/affaan-m-ecc.txt"
+  record_source "affaan-m/ecc" "$(git -C "$repo" rev-parse HEAD)" "skills"
+  rm -rf "$temp"
+}
+
 sync_external() {
   local temp impeccable taste emil
   temp="$(mktemp -d)"
@@ -257,6 +298,7 @@ PY
     "$(git -C "$taste" rev-parse HEAD)" "skills"
   record_source "emilkowalski/skill" \
     "$(git -C "$emil" rev-parse HEAD)" "skills"
+  sync_ecc
   sync_matt
 
   rm -rf "$temp"
@@ -307,6 +349,11 @@ case "$command" in
   sync-matt)
     (($# == 0)) || die "sync-matt no acepta argumentos"
     sync_matt
+    link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" --force
+    ;;
+  sync-ecc)
+    (($# == 0)) || die "sync-ecc no acepta argumentos"
+    sync_ecc
     link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" --force
     ;;
   status)

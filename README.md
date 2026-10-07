@@ -71,6 +71,7 @@ skillsctl sync-external
 
 Actualmente sincroniza:
 
+- [`affaan-m/ecc`](https://github.com/affaan-m/ecc)
 - [`pbakaus/impeccable`](https://github.com/pbakaus/impeccable)
 - [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill)
 - [`emilkowalski/skill`](https://github.com/emilkowalski/skill)
@@ -109,5 +110,7 @@ skillsctl copy-project <proyecto> [--force] [skill...]
 skillsctl sync-globals [directorio]
 skillsctl sync-project <proyecto>
 skillsctl sync-external
+skillsctl sync-matt
+skillsctl sync-ecc
 skillsctl status
 ```

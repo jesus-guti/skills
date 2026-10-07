@@ -173,7 +173,9 @@ case "$command" in
     copy_skills "$(cd "$project" && pwd)/.cursor/skills" "$@"
     ;;
   sync-globals)
-    sync_from "${1:-$HOME/.agents/skills}"
+    global_source="${1:-$HOME/.agents/skills}"
+    sync_from "$global_source"
+    link_skills "$global_source" --force
     ;;
   sync-project)
     (($# == 1)) || die "indica exactamente una ruta de proyecto"

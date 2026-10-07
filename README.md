@@ -54,6 +54,9 @@ Importar todas las skills globales nuevas o modificadas:
 skillsctl sync-globals
 ```
 
+El comando las incorpora al repo y deja las entradas globales enlazadas a la
+fuente canónica.
+
 Importar las skills propias de un proyecto, por ejemplo Rely:
 
 ```bash

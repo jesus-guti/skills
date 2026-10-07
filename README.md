@@ -74,6 +74,13 @@ Actualmente sincroniza:
 - [`pbakaus/impeccable`](https://github.com/pbakaus/impeccable)
 - [`Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill)
 - [`emilkowalski/skill`](https://github.com/emilkowalski/skill)
+- [`mattpocock/skills`](https://github.com/mattpocock/skills), siempre en la última `v1.3.x`
+
+Para actualizar solo Matt Pocock:
+
+```bash
+skillsctl sync-matt
+```
 
 Los commits importados quedan registrados en `SOURCES.lock`. La skill
 `prototype` de Emil se instala como `emil-prototype` para no sustituir la

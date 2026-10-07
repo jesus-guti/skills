@@ -14,6 +14,7 @@ Uso:
   skillsctl sync-globals [directorio]
   skillsctl sync-project <proyecto>
   skillsctl sync-external
+  skillsctl sync-matt
   skillsctl status
 
 Sin una lista de skills, link-global/link-project/copy-project instalan todas.
@@ -147,6 +148,76 @@ sync_from() {
   printf '\nImportadas: %d · Omitidas: %d\n' "$imported" "$skipped"
 }
 
+record_source() {
+  local name="$1"
+  local revision="$2"
+  local path="$3"
+  local lock="$ROOT/SOURCES.lock"
+  touch "$lock"
+  local temporary
+  temporary="$(mktemp)"
+  awk -F '\t' -v name="$name" -v revision="$revision" -v path="$path" '
+    BEGIN { updated = 0 }
+    $1 == name { print name "\t" revision "\t" path; updated = 1; next }
+    { print }
+    END { if (!updated) print name "\t" revision "\t" path }
+  ' "$lock" > "$temporary"
+  mv "$temporary" "$lock"
+}
+
+sync_matt() {
+  local temp repo tag skill_md source name
+  local -a removed=()
+  temp="$(mktemp -d)"
+  repo="$temp/mattpocock-skills"
+  tag="$(
+    git ls-remote --tags --refs https://github.com/mattpocock/skills.git 'refs/tags/v1.3.*' |
+      awk -F/ '{ print $NF }' |
+      sort -V |
+      tail -n 1
+  )"
+  [[ -n "$tag" ]] || die "no hay ninguna etiqueta v1.3.x"
+  git clone --quiet --depth 1 --branch "$tag" \
+    https://github.com/mattpocock/skills.git "$repo"
+
+  mkdir -p "$SKILLS_DIR" "$ROOT/sources"
+  : > "$temp/current-skills"
+  while IFS= read -r -d '' skill_md; do
+    source="$(dirname "$skill_md")"
+    name="$(basename "$source")"
+    rm -rf "$SKILLS_DIR/$name"
+    cp -a "$source" "$SKILLS_DIR/$name"
+    printf '%s\n' "$name" >> "$temp/current-skills"
+    printf 'importa %s\n' "$name"
+  done < <(find "$repo/skills" -name SKILL.md -not -path '*/deprecated/*' -print0)
+
+  if [[ -f "$ROOT/sources/mattpocock-skills.txt" ]]; then
+    while IFS= read -r name; do
+      [[ -n "$name" ]] || continue
+      if ! grep -Fxq "$name" "$temp/current-skills"; then
+        rm -rf "$SKILLS_DIR/$name"
+        removed+=("$name")
+        printf 'retira  %s\n' "$name"
+      fi
+    done < "$ROOT/sources/mattpocock-skills.txt"
+  fi
+  sort -u "$temp/current-skills" > "$ROOT/sources/mattpocock-skills.txt"
+
+  record_source "mattpocock/skills@$tag" \
+    "$(git -C "$repo" rev-parse HEAD)" "skills"
+  rm -rf "$temp"
+
+  local destination target resolved
+  destination="${AGENT_SKILLS_HOME:-$HOME/.agents/skills}"
+  for name in "${removed[@]}"; do
+    target="$destination/$name"
+    [[ -L "$target" ]] || continue
+    resolved="$(readlink "$target")"
+    [[ "$resolved" == "$SKILLS_DIR/$name" ]] || continue
+    rm "$target"
+  done
+}
+
 sync_external() {
   local temp impeccable taste emil
   temp="$(mktemp -d)"
@@ -177,14 +248,13 @@ path.write_text(text.replace(old, "\nname: emil-prototype\n", 1), encoding="utf-
 PY
   sync_from "$emil/skills"
 
-  {
-    printf 'pbakaus/impeccable\t%s\t.agents/skills\n' \
-      "$(git -C "$impeccable" rev-parse HEAD)"
-    printf 'Leonxlnx/taste-skill\t%s\tskills\n' \
-      "$(git -C "$taste" rev-parse HEAD)"
-    printf 'emilkowalski/skill\t%s\tskills\n' \
-      "$(git -C "$emil" rev-parse HEAD)"
-  } > "$ROOT/SOURCES.lock"
+  record_source "pbakaus/impeccable" \
+    "$(git -C "$impeccable" rev-parse HEAD)" ".agents/skills"
+  record_source "Leonxlnx/taste-skill" \
+    "$(git -C "$taste" rev-parse HEAD)" "skills"
+  record_source "emilkowalski/skill" \
+    "$(git -C "$emil" rev-parse HEAD)" "skills"
+  sync_matt
 
   rm -rf "$temp"
   trap - EXIT
@@ -229,6 +299,11 @@ case "$command" in
   sync-external)
     (($# == 0)) || die "sync-external no acepta argumentos"
     sync_external
+    link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" --force
+    ;;
+  sync-matt)
+    (($# == 0)) || die "sync-matt no acepta argumentos"
+    sync_matt
     link_skills "${AGENT_SKILLS_HOME:-$HOME/.agents/skills}" --force
     ;;
   status)

@@ -1,98 +1,98 @@
-# Plantillas de issue
+# Issue templates
 
-El mismo cuerpo sirve para Linear (campo `description`) y para `.scratch/` (contenido del fichero). Solo cambia la cabecera.
+Same body for Linear (`description`) and `.scratch/` files. Header differs. Section order matches `/to-tickets` so a forged ticket is a tracer-bullet ticket plus LoadZone routing.
 
-## Cabecera
+Read `to-tickets/SKILL.md` (`<issue-template>` / `<local-ticket-template>`) if you need the upstream wording. Do not edit that skill. This file is the LoadZone superset.
 
-**En Linear** la primera línea de la descripción es la cabecera de ruta, porque `plan:` y `risk:` no son etiquetas:
+## Header
+
+**Linear** — first line of the description (not labels):
 
 ```markdown
-`plan:auto` · `risk:low` · área: hub/ui
+`plan:auto` · `risk:low` · area: apps/app/wellness
 ```
 
-Etiquetas de la issue: `RELY 2.0`, `agent-forged` y una de `Bug` / `Feature` / `Improvement`. Los bloqueos van en el campo nativo `blockedBy`, no en el texto.
-
-**En `.scratch/`** la cabecera es:
+Shared delivery unit (see `taxonomy.md`):
 
 ```markdown
-# <NN> — <título>
+`plan:direct` · `risk:low` · area: apps/app/wellness · bundle: wellness-hygiene
+```
+
+Area hints: `apps/app/…`, `apps/player/…`, `packages/design-system`, `packages/database`.
+
+Labels: `agent-forged`, `ready-for-agent` (or `needs-info`), one of `Bug` / `Feature` / `Improvement`. Project `LoadZone`. Native `blockedBy` for gates.
+
+**`.scratch/`:**
+
+```markdown
+# <NN> — <title>
 
 **Status:** ready-for-agent
 **Labels:** Feature · plan:auto · risk:low
-**Blocked by:** <NN, o "Ninguna">
+**Bundle:** <slug, or omit this line>
+**Blocked by:** <NN, or "None — can start immediately">
 ```
 
-## Cuerpo
+## Body
+
+English. User quote literal (Spanish allowed inside the blockquote).
 
 ```markdown
-## Lo que pidió Jesús
+## Parent
 
-> <texto del usuario, literal, sin reescribir. Recortar solo lo ajeno a esta issue.>
+<Linear id+title of the PRD or wayfinder map, if this slice has one. Omit the section when there is no parent.>
 
-## Lo que entiendo
+## What Jesús asked
 
-<Tu lectura de la intención, en dos o tres frases. Es inferencia y va marcada como tal.>
+> <literal user text for this concern only>
 
-**Asunciones tomadas**
-- <asunción> — <por qué es razonable>
+## What I understand
 
-**Preguntas abiertas** (solo si plan:hitl)
-- <pregunta> → recomendación: <opción>
+<Inference, two or three sentences, including what the short grill confirmed.>
 
-## Qué construir
+**Assumptions taken**
+- <assumption> — <why it is reasonable>
 
-<El comportamiento de punta a punta desde la perspectiva del usuario. No un listado de capas.>
+**Open questions** (only if plan:hitl)
+- <question> → recommendation: <option>
+
+## What to build
+
+<End-to-end behaviour from the user’s perspective — not a layer list.>
 
 ## No-goals
 
-- <lo que esta issue explícitamente no hace>
+- <what this ticket explicitly does not do>
 
-## Criterios de aceptación
+## Acceptance criteria
 
-- [ ] <observable desde fuera>
-- [ ] <observable desde fuera>
+- [ ] <observable from outside>
+- [ ] <observable from outside>
+
+## Blocked by
+
+- <blocking ticket id+title, or "None — can start immediately">
 ```
 
-Si no hay asunciones ni preguntas, se omiten esos bloques. Si el texto del usuario ya es preciso, "Lo que entiendo" puede reducirse a una frase — pero el bloque literal nunca se elimina.
+Omit **Assumptions taken** / **Open questions** when empty. Keep the quote block even when the rest is short.
 
 ## Bug
 
-Sustituye "Qué construir" por:
+Replace **What to build** with:
 
 ```markdown
-## Reproducción
+## Reproduction
 
-1. <paso>
-2. <paso>
+1. <step>
+2. <step>
 
-**Esperado:** <qué debería pasar>
-**Real:** <qué pasa>
-**Alcance:** <desde cuándo, en qué entornos, a quién afecta>
+**Expected:** <what should happen>
+**Actual:** <what happens>
+**Scope:** <since when, which environments, who is affected>
 ```
 
-Los criterios de aceptación de un bug incluyen siempre un test de regresión.
+Bug acceptance always includes a regression test.
 
-## PRD del lote
+## Parent PRD
 
-Solo si el lote es una feature coherente y el usuario lo pide. En Linear, un proyecto; en `.scratch/`, `PRD.md` en la carpeta de la feature.
-
-```markdown
-# <Feature>
-
-## Objetivo
-
-<Una o dos frases: qué cambia para el usuario cuando esto esté hecho.>
-
-## No-goals
-
-- <fuera de alcance del conjunto>
-
-## Issues
-
-| # | Título | Labels | Bloqueada por |
-|---|---|---|---|
-
-## Decisiones de producto ya cerradas
-
-- <decisión> — <origen: conversación, ADR, issue previa>
-```
+Forge does not invent a parallel PRD format. When the user refused a `/to-prd` hand-off and still wants a parent issue now, read the `<prd-template>` in `to-prd/SKILL.md` and use that as the parent Linear description (plus the LoadZone route header on line one). Link children via **Parent** and native `blockedBy`.

@@ -1,86 +1,75 @@
 ---
 name: issue-forge
-description: Convierte un texto suelto del usuario, o la conversación actual, en issues de Rely bien formadas y etiquetadas por tipo, ruta de planificación y riesgo. Publica en Linear por defecto, o en .scratch si se pide. Acepta lotes heterogéneos — issues sin relación entre sí, de frontend, backend o infra a la vez. Usar cuando el usuario describe trabajo en prosa informal y pide crear issues o tickets.
+description: Forges LoadZone Linear tickets from informal prose — one concern, a heterogeneous inbox, or a hand-off to wayfinder/to-prd/to-tickets. Short-grills inferred intent, tags plan/risk/bundle for the orchestrator. Use when the user dumps work, asks to create issues or tickets, or says una issue.
 ---
 
 # Issue forge
 
-Actúas como product owner de Rely. La entrada es un texto explicativo pero imperfecto, a menudo un **volcado de varias cosas sin relación entre sí**. La salida son issues que un agente puede coger sin volver a preguntar.
+Product owner for **LoadZone**. Input is imperfect prose. Output is tracker tickets an agent can grab, or a **hand-off** to a planning skill you do not rewrite.
 
-Tres reglas gobiernan todo lo demás:
+**Guess in the open, then grill the guess.** Infer what the work is for, mark it as inference, put the essential forks to the user before publishing.
 
-**El lote es heterogéneo por defecto.** No fuerces una feature común, un PRD ni un grafo de dependencias sobre issues que no lo tienen. La mayoría de lotes son una bandeja de entrada, no un proyecto.
+**Label the route and the delivery unit.** `plan:`, `risk:`, `area:`, `bundle:` live on the first line of the body — that is what the `orchestrator` skill reads. Axes in `taxonomy.md`.
 
-**No inventes intención en silencio.** Cada issue separa lo que dijo el usuario de lo que tú infieres.
+Destination, team, labels, language: `docs/agents/issue-tracker.md` plus the header rules in `issue-template.md`. Tracker is Linear (`JES-…`, project `LoadZone`). Fallback `.scratch/` only if the user asks or Linear MCP fails.
 
-**Etiqueta la ruta, no solo el contenido.** Lo que hace útil una issue aquí es que diga cuánta planificación necesita y cuánto puede decidirse sola. Es lo que lee la skill `orchestrator`.
+## Process
 
-## Destino
+### 1. Scale
 
-**Linear es el destino por defecto.** Equipo `SIALI` (prefijo `SIA`), asignadas a **Jesús Gutierrez** salvo que el usuario indique otra persona. Solo publicar en `.scratch/` si el usuario lo pide, o si el MCP de Linear no responde — en ese caso avisar de que se ha usado el fallback.
+Count **concerns** — each independently verifiable. Then take one branch. Done when the branch is chosen and named in chat (one sentence).
 
-Toda issue creada por esta skill lleva **siempre** dos etiquetas fijas:
+| Branch | Test | What you do |
+|---|---|---|
+| **One concern** | The user named a single change, one bug, or said *una issue* / *un ticket* | Stay here. Skip inbox slicing and bundling. |
+| **Inbox** | Two or more concerns that do not share one destination | Stay here. Heterogeneous by default: no shared PRD, no fake graph. |
+| **PRD** | One coherent feature, way already clear, bigger than one session, needs a parent + tracer bullets | **Hand-off.** Ask the user to run `/to-prd`, then `/to-tickets`. Read those skill files for templates; do not edit them. Stop. |
+| **Map** | Fog — the way to the destination is not visible yet, more than one session | **Hand-off.** Ask the user to run `/wayfinder`. Stop. |
 
-- `RELY 2.0` — ya existe, agrupa el trabajo de esta línea de producto.
-- `agent-forged` — ya existe, marca que la redactó esta skill y que hay inferencia dentro.
+A hand-off is complete when the user has the skill name to type. Forge does not publish that work, and does not impersonate those skills.
 
-Además, **una** etiqueta de tipo reutilizando las que ya existen en el workspace: `Bug`, `Feature` o `Improvement`. No crear etiquetas nuevas. `plan:` y `risk:` no son etiquetas: van en la primera línea de la descripción (ver `issue-template.md`), donde el orquestador las lee.
+If they refuse the hand-off and still want tickets now, continue on **one concern** or **inbox** and say the parent/map will be thinner than those skills would have made.
 
-## Proceso
+### 2. Terrain and overlaps
 
-### 1. Trocear el volcado
+For each concern you will forge: read the scraps it touches (`CONTEXT.md`, applicable `.cursor/rules/`, and for staff sessions / exercises / calendar / load work also `docs/agents/product-direction.md`). Titles use domain vocabulary (**Team**, **Player**, **DailyEntry**, **Exercise**, **Carga**, **Match Day**, …).
 
-Primero separa el texto en asuntos independientes. Un asunto es una cosa que se puede terminar y verificar por su cuenta. Dos frases sobre la misma pantalla pueden ser un asunto o dos; dos frases sobre el editor de recetas y sobre NATS nunca son el mismo asunto.
+Search open Linear issues (team `Jesus-guti-workspace`, project `LoadZone`) and `.scratch/*/issues/`. Extend or `relatedTo` instead of duplicating.
 
-Solo después, dentro de cada asunto, decide si necesita partirse en varias rebanadas verticales. Cada rebanada cruza todas las capas que toque y cabe en una sesión de agente. Para refactors amplios, expand–migrate–contract en vez de forzar la rebanada.
+Done when every concern has a title in domain words and a duplicate check.
 
-### 2. Leer el terreno
+### 3. Delivery units (inbox only)
 
-Para cada asunto, y solo para las áreas que toca: `CONTEXT-MAP.md` si existe y el `CONTEXT.md` correspondiente, más las reglas de `.cursor/rules/` que apliquen. Usa el vocabulario de dominio del repo en los títulos, no el del texto suelto. En un lote heterogéneo esto significa leer trozos distintos por issue — no leas el repo entero.
+Propose what the orchestrator turns into one worktree. Rules in `taxonomy.md` (`bundle:`). Default: one issue = one unit. Collapse same concern into one issue. Bundle only distinct `plan:direct` + `risk:low` siblings that share `area:` and can share a PR.
 
-### 3. Buscar solapes
+One-concern runs omit this step.
 
-Antes de crear nada, buscar en Linear las issues abiertas del equipo y en `.scratch/*/issues/`. Si algo ya existe, no duplicar: proponer ampliar la existente, o crear la nueva con relación `relatedTo`. Un lote con duplicados hace que dos worktrees se pisen.
+Done when every slice has a unit (solo or a shared `bundle:` slug) ready to grill.
 
-### 4. Etiquetar
+### 4. Short grill
 
-Tres ejes, todos obligatorios. Detalle en `taxonomy.md`.
+One AskQuestion round before publish (grilling shape: recommended option first, `(Recommended)`, slug `id`s). Essential forks only:
 
-- **Tipo** → etiqueta Linear `Bug` / `Feature` / `Improvement`.
-- **`plan:`** → `direct`, `auto` o `hitl`. Cuánta planificación necesita y si va a bloquear al usuario.
-- **`risk:`** → `low`, `med` o `high`, por radio de impacto. Justifica el `plan:`.
+- Confirm the inferred intent (your guess as the recommended option).
+- Inbox: confirm bundles vs keep-separate vs merge.
+- At most one product fork per concern that would leave `plan:hitl` hollow.
 
-Un `plan:` incoherente con su `risk:` es un error: `risk:high` con `plan:direct` no existe.
+Skip only if they said forge without questions **and** every slice is `plan:direct` with no product fork. Repo facts are your **legwork**.
 
-### 5. Relaciones
+Fold answers into the ticket body. Remaining escalation forks stay `plan:hitl` with a named recommendation.
 
-Solo declarar bloqueos **reales**. En Linear, `blockedBy` entre issues del lote; publicar en orden de dependencia para tener identificadores a los que referirse. Si dos issues no se gatean, no las relaciones aunque hayan llegado en el mismo mensaje. Usar `relatedTo` para vecindad temática sin bloqueo.
+Done when every fork in that round has an answer or an explicit skip.
 
-Añadir `PRD.md` o proyecto de Linear **solo** si el lote sí es una feature coherente y el usuario lo pide.
+### 5. Publish
 
-### 6. Publicar
+Body from `issue-template.md` — same sections as `/to-tickets` (`Parent`, `What to build`, `Acceptance criteria`, `Blocked by`), plus quote, inference, no-goals, and the route header.
 
-- **Linear**: `save_issue` por issue, en orden de dependencia, con `team: "SIALI"`, `assignee: "Jesús Gutierrez"`, las etiquetas de la sección Destino y la descripción de `issue-template.md`. Estado por defecto `Backlog`; no meter en ciclo salvo petición.
-- **`.scratch/`**: un fichero por issue. Si el lote es una feature, `.scratch/<feature-slug>/issues/<NN>-<slug>.md`. Si es heterogéneo, `.scratch/inbox-<YYYY-MM-DD>/<NN>-<slug>.md`. Estado `ready-for-agent`, o `needs-info` si quedan preguntas abiertas.
+Linear: `save_issue` in dependency order, `blockedBy` only for real gates, `relatedTo` among a bundle. Labels: `agent-forged`, `ready-for-agent` (or `needs-info`), one of `Bug` / `Feature` / `Improvement`.
 
-### 7. Devolver el índice
+Chat index only: id+URL, title, type, `plan:`, `risk:`, `bundle:` or —, blocked by.
 
-Al chat solo va una tabla: identificador y URL, título, tipo, `plan:`, `risk:`, bloqueada por. Después, las ambigüedades que no pudiste resolver, agrupadas como preguntas concretas. Nunca volcar el contenido de las issues al chat.
+Done when every unit is on the tracker (or `.scratch/` fallback) and the index is in chat.
 
-## Qué hace buena a una issue aquí
+## Ticket quality
 
-- **No-goals explícitos.** Es lo único que impide que un subagente expanda el alcance.
-- **Criterios de aceptación verificables**: observables desde fuera, no "el código está limpio".
-- **Sin rutas de fichero ni snippets**, salvo que el snippet codifique una decisión que la prosa no puede expresar (una forma de tipo, un esquema, una máquina de estados).
-- **Las asunciones se registran, no se esconden.**
-
-## Anti-patrones
-
-- Agrupar en una feature o un proyecto issues que solo comparten el mensaje en que llegaron.
-- Inventar bloqueos para dar sensación de orden.
-- Reescribir el texto del usuario y perder el original.
-- Presentar una inferencia tuya como si fuera un requisito suyo.
-- Preguntar al usuario cosas que se responden leyendo el código.
-- Crear etiquetas nuevas en Linear en vez de usar las que hay.
-- Issues que son un listado de capas (schema, luego API, luego UI) en vez de rebanadas verticales.
-- Copiar prosa de `CONTEXT.md` dentro de la issue en lugar de enlazarla.
+Explicit no-goals. Acceptance observable from outside. Assumptions recorded. Grill answers in the body. Paths/snippets only when they *are* the decision (type shape, schema, state machine).

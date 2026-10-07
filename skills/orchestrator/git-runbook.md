@@ -4,14 +4,23 @@
 
 Crear siempre desde la base acordada, con `git fetch` previo:
 
+Issue suelta:
+
 ```bash
-git worktree add -b jgutierrez/sia-NNN-<slug> ../worktrees/rely/sia-NNN origin/dev
+git worktree add -b jgutierrez/jes-NNN-<slug> ../worktrees/loadzone/jes-NNN origin/dev
+```
+
+Bundle (`bundle:<slug>` compartido por varias issues `plan:direct`):
+
+```bash
+git worktree add -b jgutierrez/bundle-<slug> ../worktrees/loadzone/bundle-<slug> origin/dev
 ```
 
 Liberar manteniendo la rama:
 
 ```bash
-git worktree remove ../worktrees/rely/sia-NNN --force
+git worktree remove ../worktrees/loadzone/jes-NNN --force
+git worktree remove ../worktrees/loadzone/bundle-<slug> --force
 ```
 
 Un `git checkout <rama>` falla mientras esa rama siga montada en un worktree. Liberar antes de que el humano haga `gh pr checkout`.

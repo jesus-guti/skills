@@ -5,16 +5,17 @@
 Lo que el subagente planificador devuelve y el orquestador pega al chat, una issue por mensaje. Sin preámbulo, sin resumen del plan.
 
 ```markdown
-### SIA-NNN — <título>
+### JES-NNN — <título>
 
 **Decidido**
 1. <decisión> — <motivo en media línea>
 2. <decisión> — <motivo>
 3. [assume] <decisión> — <motivo>. Revertir: <cómo>
 
-**Pendiente de ti** — no pegar A/B/C en el chat. El orquestador las lanza con `AskQuestion` (skill `grilling`): una ronda, opción recomendada primera.
+**Pendiente de ti**
+A. <pregunta> → recomendación: <opción> porque <motivo>
 
-**Riesgo**: <bajo|medio|alto> · **Bloquea a**: SIA-XXX, SIA-YYY
+**Riesgo**: <bajo|medio|alto> · **Bloquea a**: JES-XXX, JES-YYY
 ```
 
 Si no hay `hitl`, se omite el bloque "Pendiente de ti" y se dice que la issue está lista para implementar.
@@ -22,7 +23,7 @@ Si no hay `hitl`, se omite el bloque "Pendiente de ti" y se dice que la issue es
 Si la issue superó el tope de 3 `hitl`, el informe se sustituye por:
 
 ```markdown
-### SIA-NNN — mal definida
+### JES-NNN — mal definida
 
 Necesita <N> decisiones de producto para poder planificarse. Propuesta de partición:
 - <sub-issue 1>
@@ -42,11 +43,14 @@ En `.scratch/orchestration-<lote>/BLOCKING.md`.
 
 <diagrama ascii: quién bloquea a quién>
 
-## Issues
+## Unidades de entrega
 
-| Issue | Rama / worktree | Bloqueada por | Estado |
-|---|---|---|---|
-| SIA-NNN | jgutierrez/sia-NNN-slug | — | planificando |
+Una fila por **unidad de entrega** (issue suelta o bundle). Las issues dentro de un bundle van en la columna Issue, no en filas extra de worktree.
+
+| Unidad | Issues | Rama / worktree | Bloqueada por | Estado |
+|---|---|---|---|---|
+| JES-NNN | JES-NNN | jgutierrez/jes-NNN-slug | — | planificando |
+| bundle-wellness-hygiene | JES-12, JES-13 | jgutierrez/bundle-wellness-hygiene | — | implementando |
 
 ## Notas
 

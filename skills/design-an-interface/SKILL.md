@@ -1,11 +1,20 @@
 ---
 name: design-an-interface
-description: Generate multiple radically different interface designs for a module using parallel sub-agents. Use when user wants to design an API, explore interface options, compare module shapes, or mentions "design it twice".
+description: Generate multiple radically different module/API interface designs using parallel sub-agents. Use when user wants to design an API, explore module shapes, compare caller surfaces, or mentions "design it twice". Not for user-facing UI screens — use prototype (UI branch) for those.
 ---
 
 # Design an Interface
 
 Based on "Design It Twice" from "A Philosophy of Software Design": your first idea is unlikely to be the best. Generate multiple radically different designs, then compare.
+
+## Scope gate
+
+This skill designs **module/API interfaces** (types, methods, what callers see) — **not** user-facing UI screens, layouts, or product copy.
+
+If the user means a **pantalla / screen / layout / UX**, stop and pick by whether the screen exists
+yet: a new screen goes to the **prototype** skill ([UI.md](../prototype/UI.md)); an existing screen that
+feels off goes to [invisible-design](../invisible-design/SKILL.md) for audit and refactor. Keep
+on-screen copy lean: labels and data, no internal-logic prose on the page.
 
 ## Workflow
 
@@ -92,3 +101,5 @@ From "A Philosophy of Software Design":
 - Don't skip comparison - the value is in contrast
 - Don't implement - this is purely about interface shape
 - Don't evaluate based on implementation effort
+- Don't treat this as a UI/mock skill — redirect screen work to prototype (UI)
+- Don't leak internal module mechanics into the *public* signature or usage examples; the point of depth is hiding complexity behind a small surface

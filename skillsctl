@@ -54,7 +54,10 @@ parse_install_args() {
   done
 
   if ((${#SKILL_NAMES[@]} == 0)); then
-    mapfile -t SKILL_NAMES < <(all_skill_names)
+    while IFS= read -r name; do
+      [[ -n "$name" ]] || continue
+      SKILL_NAMES+=("$name")
+    done < <(all_skill_names)
   fi
 }
 

@@ -5,24 +5,26 @@ description: Grill the user relentlessly about a plan, decision, or idea. Use wh
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
-Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
+Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled — the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round. Then wait for the user's answers before the next round.
 
-Format a round like so:
+## How to ask (mandatory)
 
-```
-❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+Do **not** number questions as Q1/Q2 (or similar) in chat markdown. Do **not** paste the question list as prose.
 
-➡️ <your recommended answer>
+Collect the round with the **AskQuestion** tool:
 
----
+- One AskQuestion call per round, with **every** frontier question in that call's `questions` array.
+- `id`: stable slug for the decision (e.g. `audience`, `auth-model`) — not `q1`.
+- `prompt`: the full question (title + body). Put enough context in `prompt` that the user can decide without reading extra chat.
+- `options`: at least two concrete choices. Each option needs `id` and `label`.
+- Put **your recommended answer first** and append `(Recommended)` to that option's `label`.
+- If several answers can be true at once, set `allow_multiple: true`.
+- Users can always pick Other; still give real alternatives, not a single dummy option.
 
-❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+Keep any chat text short: one sentence that this round is the current frontier. The questions themselves live only in AskQuestion.
 
-➡️ <your recommended answer>
-```
+After the user answers, reshape the tree — settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and AskQuestion the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
 
-Each round the user answers reshapes the tree: settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
-
-Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
+Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it — don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report — ask the rest of the frontier now. The _decisions_ are the user's — put each to them via AskQuestion and wait.
 
 The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.

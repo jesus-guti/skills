@@ -1,0 +1,29 @@
+{
+  "core": [
+    "frontend-workflow",
+    "impeccable",
+    "frontend-review",
+    "frontend-motion",
+    "sir-jony-ive"
+  ],
+  "optional": [
+    "variant",
+    "break",
+    "state-machine",
+    "build-design"
+  ],
+  "dependencies": {
+    "variant": [
+      "frontend-review"
+    ],
+    "break": [
+      "frontend-review"
+    ],
+    "state-machine": [
+      "frontend-review"
+    ],
+    "build-design": [
+      "frontend-review"
+    ]
+  }
+}

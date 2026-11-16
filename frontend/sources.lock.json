@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {
+      "repository": "jakubkrehel/skills",
+      "commit": "8b254eb75dadf3615a6abce87aed28e1b6e4d77c",
+      "url": "https://github.com/jakubkrehel/skills"
+    },
+    {
+      "repository": "emilkowalski/skills",
+      "commit": "715c1807e08c497cfd1dc4feb450a2a3300ef2a9",
+      "url": "https://github.com/emilkowalski/skills"
+    },
+    {
+      "repository": "pbakaus/impeccable",
+      "commit": "c1e0e5492fbb524f5df84d635ecfae7dc438ec45",
+      "url": "https://github.com/pbakaus/impeccable"
+    },
+    {
+      "repository": "jesus-guti/sir_jony_ive",
+      "commit": "cc2a8d24786c6ab8cca7d7d3b7075374ff5688ac",
+      "url": "https://github.com/jesus-guti/sir_jony_ive"
+    }
+  ],
+  "policy": "Snapshots revisados. Actualizar es una nueva selección explícita; no ejecutar sync-external para mantener este perfil."
+}

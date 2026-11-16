@@ -1,0 +1,164 @@
+[
+  {
+    "name": "animate",
+    "path": "emilkowalski/skills/skills/animate/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Usar su secuencia como columna de construcción: decidir si animar, nombrar propósito, elegir herramienta barata, propiedades, interrupción y degradación. Es accionable con RECIPES.md, pero repite emil-design-eng y los catálogos de review/improve. Al sintetizar, retirar el saludo que obliga a esperar, resolver la contradicción entre curvas exactas del autor y tokens existentes y evitar invocar pick-ui-library para cada componente: primero @sialos/ui y React Aria. El veto a toda acción de teclado, stagger obligatorio y límite general de 300 ms frente a drawers de 500 ms requieren criterio de frecuencia y contexto, no bloques automáticos. Gates locales y evidencia renderizada. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "animate-expo",
+    "path": "emilkowalski/skills/skills/animate-expo/SKILL.md",
+    "verdict": "Retire",
+    "reason": "El contenido es ejecutable para React Native/Expo, con worklets, Reanimated, Gesture Handler, haptics y rutas nativas; ese es precisamente el desajuste con una SPA React web. Importarlo al perfil Sialos añade otro runtime y recomendaciones de instalación que no ayudan a @sialos/ui. frontend-motion cubre la animación web y sus restricciones; una futura app Expo justificaría un perfil móvil separado. Retirada propuesta únicamente de este perfil, sin desinstalar. Las afirmaciones sobre Reanimated 4 y versiones de Expo no se declaran correctas ni obsoletas en esta auditoría. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "exclude",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "animation-performance",
+    "path": "emilkowalski/skills/skills/animation-performance/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Conservar como guía de diagnóstico bajo references: inventario por driver/propiedad, causa antes de arreglo, renders React por frame, variables heredadas, coste de blur y uso medido de will-change. Aporta más profundidad que el pulido general de impeccable, aunque sus reglas se repiten en animate, STANDARDS y AUDIT. Matizar scale como sustituto de dimensiones, opacity como sustituto de visibilidad y drop-shadow como sustituto de box-shadow: deben preservar layout, foco, hit testing y aspecto. Sus tablas compositor/navegador y umbral Motion 14.2 son afirmaciones técnicas por comprobar al usarlas, no motivos para actualizar dependencias automáticamente. No prometer rendimiento a partir de lectura de código. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "animation-vocabulary",
+    "path": "emilkowalski/skills/skills/animation-vocabulary/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Convertir el glosario inverso en references/vocabulary.md cargado solo ante dudas de términos; distingue crossfade/morph, origin-aware, springs, momentum y gestos con ejemplos de consulta claros. Su alcance de nombrar está bien acotado, pero un entrypoint más y saludo obligatorio no aportan al perfil reducido. Eliminar la obligación de citar literalmente y no salir del glosario: la terminología debe poder explicarse en español y reconocer conceptos ausentes. Las entradas de rendimiento son descripciones simplificadas, no garantías técnicas; la guía diagnóstica será su dueña. No autoriza añadir efectos por encontrarles nombre. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "apple-design",
+    "path": "emilkowalski/skills/skills/apple-design/SKILL.md",
+    "verdict": "Merge into sir-jony-ive",
+    "reason": "Aporta consulta conceptual sobre manipulación directa, valor presentado, handoff de velocidad, proyección, resistencia e interrupción; esas piezas solapan gestures y pueden enlazarse desde frontend-motion sin duplicarse. Materiales, tipografía y principios generales pertenecen al conocimiento bajo demanda de sir-jony-ive. No mantener esta skill con trigger amplio: ordena chrome translúcido, sustituir divisores por blur y usar fuente de sistema, lo que puede reemplazar la identidad industrial existente. Convertir esos apartados en ejemplos condicionados a un encargo explícito. Las atribuciones WWDC y fórmulas se conservan como afirmaciones de la fuente pendientes de verificación, no autoridad sobre el DS. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "ask-sonner",
+    "path": "emilkowalski/skills/skills/ask-sonner/SKILL.md",
+    "verdict": "Keep",
+    "reason": "Referencia especializada y accionable con setup, recetas, diagnóstico por síntoma y API.md separado; ninguna otra skill retenida cubre esa biblioteca con este detalle. Consultarla solo si una tarea usa realmente Sonner o su adaptador del DS; no introducirlo por una petición genérica de notificaciones. Su propia opción headless permite razonar sobre una envoltura coherente, pero no salta @sialos/ui, tokens, capas ni política de anuncios y persistencia. Los consejos de next-themes, !important, defaults y callbacks son específicos de implementación y versión, sin certificar aquí su exactitud. No es una sexta entrada core ni un proveedor general de diseño. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "break-ui",
+    "path": "emilkowalski/skills/skills/break-ui/SKILL.md",
+    "verdict": "Merge into break",
+    "reason": "El procedimiento de fixture worst-case y toggle cubre la misma necesidad que el extra break de Jakub. Incorporar a sus referencias la tabla campo/fuente/límite, CATALOG.md, casos de grafemas, números/plurales, tiempo, media ausente y volumen respaldado por contrato. Son aportes concretos que evitan pruebas solo con texto largo. Mantener un único extra, con fixtures/stories del proyecto, sin otro SKILL.md. No tratar title como acceso suficiente a texto truncado ni inferir una rotura visual desde CSS sin render. El toggle nunca debe llegar a producción; @sialos/ui, tokens y gates prevalecen sobre el chrome literal propuesto. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "choreograph",
+    "path": "emilkowalski/skills/skills/choreograph/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Integrar como guía específica de coordinación: roles de lead/support/static, relaciones together/overlap/sequence/carry, timeline, cancelación e interrupción. RECIPES.md lo hace aplicable y aporta algo distinto de escoger una curva; no necesita entrypoint adicional. Corregir reglas absolutas: prohibir stagger uniforme o exigir igual familia temporal son criterios del autor, no fallos por sí mismos. La prohibición de bloquear interacción contradice luego gatear acciones hasta acabar con un ref: no bloquear controles por una animación decorativa. Medidas, bounce y ejemplos deben mapearse a tokens y contexto Sialos; respetar los contratos locales al leer código. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "emil-design-eng",
+    "path": "emilkowalski/skills/skills/emil-design-eng/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Es la fuente transversal de 676 líneas: propósito/frecuencia, cohesión, interrupción, origen, feedback y comprobación lenta/dispositivo, con numerosos ejemplos. Buena base de conocimiento, pero repite construcción, diagnóstico, gestos, revisión y stagger presentes en skills especializadas; no cargarla entera en cada tarea. Extraer principios y distribuir profundidad en references sin SKILL.md extra. Retirar el rol de revisor general que ya cubre impeccable, el saludo y el formato universal impuesto. Escalas 0.97, curvas propias, blur, stagger y Base UI son recetas del autor subordinadas a tokens y React Aria, no razones para sustituir identidad o componentes. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "find-animation-opportunities",
+    "path": "emilkowalski/skills/skills/find-animation-opportunities/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Conservar como modo explícito de propuesta: puerta frecuencia/propósito/velocidad/función, lista breve y candidatos rechazados; protege tablas, telemetría y acciones repetidas de animación ornamental. Sus tablas de curvas, duraciones y recipes duplican animate, remove y emil-design-eng. Integrar solo el procedimiento y remitir a referencias comunes. Sustituir valores exactos por tokens locales y no exigir 2–5 rechazados si no se observaron tantos. No proponer hold-to-confirm como sustituto suficiente de confirmación/deshacer ni como único mecanismo accesible. Las oportunidades deben responder a un defecto de feedback observado, no a la obligación de hacer la SPA más viva. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "gestures",
+    "path": "emilkowalski/skills/skills/gestures/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Mantener una referencia avanzada: separar tracking directo de release con física, fuente común para overlay, interrupción, velocidad y resistencia. Es concreta y complementa el motion ordinario, pero repite apple-design y emil-design-eng. Eliminar Vaul como adopción por defecto y la derivación automática a pick-ui-library: primero los componentes @sialos/ui con React Aria; gestos nuevos solo dentro del encargo. Añadir alternativa por botón/teclado para arrastrar o descartar, cancelación y gestión de foco, y respetar el contrato local de hit-target en vez de imponer 44 px. Configuraciones y umbrales de velocidad son ejemplos a verificar, no exactitud API acreditada. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "improve-animations",
+    "path": "emilkowalski/skills/skills/improve-animations/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Extraer el modo auditoría/plan con recon de tokens, ocho categorías, confirmación de cada hallazgo, decisiones deliberadas y planes con commit y verificación. La división AUDIT.md/PLAN-TEMPLATE.md es accionable pero duplica STANDARDS/animate; usar un catálogo común. Resolver la contradicción entre nunca editar/declinar just fix it y ofrecer execute con subagente. No imponer planes/ en cualquier repo ni fan-out antes de acotar el contrato. Corregir la severidad que pone reduced-motion ausente en MEDIUM frente a gusto de easing en HIGH y evitar exigir oportunidades si no existen. Gates make, accesibilidad e identidad local mandan sobre sus valores exactos. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "mobile-native",
+    "path": "emilkowalski/skills/skills/mobile-native/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Conservar una referencia móvil web de diagnóstico por síntoma: hover por capacidad, viewport dinámico/estable, zoom de inputs, teclado, safe areas y overscroll. Sí aplica a la SPA y sus recetas son concretas; se solapa con impeccable adapt/harden y con dominios de Jakub, por lo que no merece otra entrada. No copiar el baseline global a ciegas: fija 16 px y colores crudos, cambia selección de enlaces y suprime feedback nativo. Aplicar al componente/host dueño mediante tokens, sin alterar el lenguaje visual ni reemplazar comportamientos React Aria. Separar cambios comprobables por código de comprobación física pendiente, sin certificar soporte de navegador ni requisitos PWA inexistentes. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "pick-ui-library",
+    "path": "emilkowalski/skills/skills/pick-ui-library/SKILL.md",
+    "verdict": "Retire",
+    "reason": "Su lista curada es accionable para elegir stack nuevo, pero trata un dropdown como tarea de Base UI incluso si la petición nombra otra solución y recomienda Vaul/cmdk/Sonner/next-themes/Zustand por categoría. En Sialos ya están decididos DS propio, tokens y React Aria; incluso sin migrar al competidor introduce recomendaciones ajenas y mantenimiento de otra lista. frontend-workflow debe resolver primero el componente del DS y documentar un hueco; sir-jony-ive puede aportar investigación explícita cuando haya una decisión abierta. Retirada propuesta del perfil, sin desinstalar. No se afirma que sus bibliotecas estén obsoletas ni se valida su catálogo de APIs. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "exclude",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "prototype",
+    "path": "emilkowalski/skills/skills/prototype/SKILL.md",
+    "verdict": "Merge into variant",
+    "reason": "Solapa directamente el extra variant de Jakub: tres direcciones, picker, contenido real, tabla de costes, elección humana y promoción con retirada del harness. Integrar como notas la separación dev-only y el replay de una animación solo cuando sirva; mantener un solo extra y preferir la comparación sobre contexto real del destino. No heredar ejes de personalidad o interacción que cambien identidad/comportamiento fuera de encargo. PICKER.md copiado literalmente añade estética y valores externos: aislar la herramienta o usar host existente, sin excepción implícita al DS. No instalar otro entrypoint ni imponer tres variantes cuando la ficha local solo necesite dos. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "remove-animations",
+    "path": "emilkowalski/skills/skills/remove-animations/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Integrar como modo de sustracción y referencia de riesgos: estados iniciales ocultos, callbacks que esperan animación, unmount, foco, layout shifts y selectores/tests dependientes. Esa lista aporta valor singular; la puerta por propósito y frecuencia duplica find/animate/review. Aplicar la retirada por evidencia y encargo, sin borrar tokens exportados solo porque no haya referencias locales ni desinstalar bibliotecas como parte de un pulido. Sustituir el veto universal al teclado por análisis del feedback y coste reales, y los tiempos fijos por tokens. Verificar estados y accesibilidad con make ui-check/web-check; una ausencia de animación no prueba por sí sola que la tarea mejore. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "review-animations",
+    "path": "emilkowalski/skills/skills/review-animations/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Conservar el modo de revisar un diff de motion, simplificar antes de añadir y citar archivo:línea con antes/después y cobertura declarada. STANDARDS.md duplica AUDIT/animate y debe convertirse en una referencia común. Corregir el sesgo default to flagging y los bloqueos por pure-fade, built-in easing o falta de stagger: son preferencias de diseño y pueden contradecir reduced-motion o tokens locales. Accesibilidad aparece última en remediación; debe ser una condición inicial. Bloquear por tarea/feedback roto, interrupción fallida o degradación demostrada, no por apartarse de una receta. frontend-review delega aquí solo motion; impeccable conserva auditoría y pulido generales. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "write-swift",
+    "path": "emilkowalski/skills/skills/write-swift/SKILL.md",
+    "verdict": "Retire",
+    "reason": "La guía extensa de valores, concurrencia, actores, ARC, Swift Testing y migraciones está bien poblada de ejemplos, pero pertenece a Swift/SwiftUI y herramientas nativas, fuera del alcance de React SPA. Mantenerla en el perfil frontend añadiría 396 líneas y disparadores sobre un stack que no implementa @sialos/ui. frontend-workflow y los contratos React/web cubren este producto; un proyecto Swift necesitaría un perfil propio y documentación de su toolchain. Retirada propuesta del perfil, sin eliminar instalaciones. Sus declaraciones de actualidad Swift 6.3/6.4 y disponibilidad quedan sin verificar: el veredicto es de alcance, no Update ni juicio sobre APIs obsoletas. Uso real: desconocido, sin telemetría de invocaciones ni equivalencia entre ausencia de métricas y desuso. Actualidad: se evaluó coherencia de criterios y referencias locales; exactitud de APIs, versiones, CLI y soporte de navegador no verificada.",
+    "recommended_role": "exclude",
+    "usage_7d": null,
+    "usage_30d": null
+  }
+]

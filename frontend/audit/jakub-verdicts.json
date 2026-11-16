@@ -1,0 +1,138 @@
+[
+  {
+    "name": "afk",
+    "path": "jakubkrehel/skills/skills/afk/SKILL.md",
+    "verdict": "Retire",
+    "reason": "El procedimiento es ejecutable y exige evidencia y commits reversibles, pero manda trabajar durante horas, recorrer todo el producto y generar al menos quince ideas, tres funcionales. Ese alcance desborda un perfil frontend reducido y choca con la lectura por contratos de Sialos. frontend-workflow cubre la ejecución acotada y frontend-review/impeccable la revisión; no importar este orquestador ni sus obligaciones de exploración. Retirada propuesta del perfil, sin desinstalar ni borrar. Sus remisiones a better-* no justifican conservar esos entrypoints. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "exclude",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-accessibility",
+    "path": "jakubkrehel/skills/skills/better-accessibility/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Integrar como referencia de accesibilidad: walks de teclado y lector, nombres, regiones vivas, foco tras navegación SPA, alternativas al arrastre y separación entre obligación WCAG y recomendación. Es accionable, pero duplica impeccable audit y parte del contrato local. Verificar el comportamiento de @sialos/ui sobre React Aria; no introducir trampas de foco ni roving tabindex manuales. Conservar la densidad compacta y su contrato de hit-target; matizar el veto absoluto a solapamientos. Añadir las excepciones de reflow para mapas/tablas, recogidas en https://www.w3.org/WAI/WCAG22/Understanding/reflow.html . No conservar otra skill revisora autónoma. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-colors",
+    "path": "jakubkrehel/skills/skills/better-colors/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Integrar la medición del par realmente pintado, transparencias y comprobación por tema en references de frontend-review; comparte auditoría y pulido con impeccable. Palette-generation y token-naming son consulta para trabajo explícito en tokens, no mandato para cambiar identidad: sus dos capas preferidas, renombrar primary como accent, imponer separación de 15 grados o elegir un único mecanismo de tema no deben reemplazar ref/sys/comp, primary/accent y tema automático más override de Sialos. WCAG bloquea y APCA avisa según contrato local. No generar paletas ni valores literales al revisar componentes. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-interface",
+    "path": "jakubkrehel/skills/skills/better-interface/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Tomar la evidencia archivo:línea más render, cobertura declarada, consolidación por causa común, severidad por impacto y prioridad de arreglar el token o componente compartido. Es un procedimiento claro, pero instalarlo completo añade un segundo proveedor general y obliga a cargar seis skills en cada revisión, además de pedir otra invocación para un diff. frontend-review debe ser una síntesis enfocada al cambio y delegar auditoría/pulido general a impeccable intacto. Sustituir las remisiones por referencias internas sin SKILL.md; hacer explícitos @sialos/ui, tokens, React Aria y make ui-check/web-check. Calibrar bloqueos con excepciones del producto, no preferencias visuales. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-layout",
+    "path": "jakubkrehel/skills/skills/better-layout/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Conservar recetas de minmax(0,1fr), min-width:0, propiedades lógicas, expansión de traducciones, cues de contenido oculto y espacio para foco bajo chrome fijo. Los patrones de detección son accionables y ceden expresamente a tokens y densidad; la cobertura se solapa con impeccable layout/adapt/harden. Integrar como referencia por fallo observado, sin otro revisor. Rebajar a heurística ocultar acciones cuando hay más de tres y separar reflow de mapas/tablas que requieren dos dimensiones; no simplificar un panel industrial solo por una regla editorial. Las correcciones deben usar el DS y gates existentes. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-typography",
+    "path": "jakubkrehel/skills/skills/better-typography/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Conservar en referencia técnica tabular-nums para telemetría y tablas, fuentes realmente cargadas, síntesis de peso, bidi, truncado recuperable y wrapping. Tiene detecciones concretas, pero impeccable typeset y el conocimiento bajo demanda de sir-jony-ive cubren el dominio general. Sus mínimos de peso, medida 60–75, line-height unitario, smoothing y escalas de ejemplo no autorizan a sustituir los nueve roles tipográficos de Sialos ni su densidad. Contrastar un defecto con tokens y render antes de bloquear. Las tablas de soporte de navegador y recetas de iOS requieren comprobación cuando se utilicen; no se declara obsolescencia sin verificarla. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "better-ui",
+    "path": "jakubkrehel/skills/skills/better-ui/SKILL.md",
+    "verdict": "Merge into frontend-motion",
+    "reason": "Extraer a frontend-motion referencias de retargeting con transiciones, feedback instantáneo frecuente, reduced motion, propiedades explícitas y revisión de estados; superficies, iconos y forced-colors van a referencias de frontend-review. Duplica motion de Emil y pulido de impeccable, con conflictos explícitos: exige scale 0.96, 150 ms, curva exacta, bounce cero y stagger 100 ms aun cuando el proyecto ya tiene lenguaje propio. Esos números son criterios estéticos del autor, no exactitud de API ni gates locales. Reemplazarlos por tokens y lenguaje de Sialos; no alterar biseles, radios o pictogramas por moda. Sin entrypoint autónomo. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null,
+    "implementation_note": "El snapshot completo queda como referencia de frontend-review; frontend-motion gobierna el movimiento. No se ha dividido el texto upstream por secciones."
+  },
+  {
+    "name": "better-writing",
+    "path": "jakubkrehel/skills/skills/better-writing/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Integrar inventario previo de términos, comprobación label/acción, errores con recuperación, estados vacíos orientados a tarea, cadenas completas y distinción deshacer/confirmar. Las tablas y ejemplos permiten actuar, pero impeccable clarify/harden y el glosario/copy del producto cubren la función general. frontend-review debe citar la fuente terminológica y corregir incoherencias concretas, sin adoptar vocabulario, tono o política de mayúsculas ajenos. No inferir la causa de un error ni prometer recuperación inexistente. El transporte de strings y anuncios debe respetar el mecanismo local y @sialos/ui; no imponer otra solución i18n. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "break",
+    "path": "jakubkrehel/skills/skills/break/SKILL.md",
+    "verdict": "Improve",
+    "reason": "Aporta un deliverable específico: página visual con escenarios hostiles elegidos por las entradas reales, componentes importados intactos y hallazgos observados junto a cada caso; impeccable harden comparte los riesgos pero no ese formato. Mantener upstream como extra explícito, con un encuadre local que priorice stories límites/fixtures existentes y evite rutas de diagnóstico publicadas. La prohibición de lanzar/depurar navegador o hacer una segunda pasada limita la prueba: un contenedor de 320 px no valida media queries, zoom, React Aria ni overlays portaled. Declarar esa cobertura y completar checks pertinentes mediante make ui-check/web-check. Sus dueños better-* deben resolverse a frontend-review/referencias, sin instalar seis revisores. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "optional",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "build-design",
+    "path": "jakubkrehel/skills/skills/build-design/SKILL.md",
+    "verdict": "Improve",
+    "reason": "Es útil bajo petición con diseño fuente: mapea variables e instancias a tokens/componentes, declara redondeos y compara capturas a las anchuras del frame. Mantener upstream como extra, pero el encuadre local debe corregir dos mandatos: construir fallos de contraste/foco fielmente y retirar estados loading/error no dibujados. En Sialos prevalecen DS, React Aria y estados obligatorios; reportar y resolver el conflicto antes de trasladarlo, sin sacrificar accesibilidad. Una ausencia en Figma no autoriza HTML ad hoc que eluda @sialos/ui, ni inventar tokens. Añadir gates make y evitar que un umbral genérico de 2 px fuerce cambios ajenos a los tokens. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "optional",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "explain-interface",
+    "path": "jakubkrehel/skills/skills/explain-interface/SKILL.md",
+    "verdict": "Keep",
+    "reason": "Conservar como consulta explícita para investigar una interfaz o efecto externo: distingue medido/derivado/inferido, CSS compilado de autoría y reconstrucción desde imagen; inspecciona capas y pseudo-elementos y trata contenido remoto como evidencia no confiable. Es un procedimiento singular frente a la revisión de impeccable y al motion propio de Emil; no convierte referencias ajenas en un rediseño automático. Puede enriquecer sir-jony-ive bajo demanda, sin incorporarse al router por cada URL ni elevar valores observados a tokens. Referencia, no entrada core. La portabilidad del navegador se resuelve al invocarla. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "interface-review",
+    "path": "jakubkrehel/skills/skills/interface-review/SKILL.md",
+    "verdict": "Merge into frontend-review",
+    "reason": "Es la aportación más directa para la síntesis propia: scope verificable por base/head, lectura de líneas eliminadas, consumidores de tokens y clasificación Introduced/Regression/Pre-existing por causa. scope-resolution.md y removed-signals.md son recetas concretas, no solo consejos. Integrarlas en frontend-review, eliminando la dependencia dura de better-interface y seis entrypoints, y conservar las exclusiones, el límite de consumidores declarado y el checkout intacto. Revisar los goldens visuales como evidencia aun si no se auditan bytes generados. Incorporar make ui-check/web-check y render según el tipo de afirmación; no convertir el diff en una auditoría estética global. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "state-machine",
+    "path": "jakubkrehel/skills/skills/state-machine/SKILL.md",
+    "verdict": "Improve",
+    "reason": "Aporta un banco de trabajo de estados reales, fixtures en la frontera de datos, loading estable y enlaces por __state; no es otra auditoría ni una librería de máquinas de estados. Mantener upstream solo como extra explícito y priorizar Storybook/MSW existentes de Sialos antes de crear una ruta nueva. switcher.md impone un selector oscuro con colores y medidas crudos fuera del DS: aislarlo como herramienta externa autorizada o reemplazar su host por el banco existente; no introducir esa excepción en producción. Añadir gates y evitar teclas globales que intercepten el teclado de widgets React Aria. Describir la retirada del harness sin alterar instalaciones. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "optional",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "teardown",
+    "path": "jakubkrehel/skills/skills/teardown/SKILL.md",
+    "verdict": "Keep",
+    "reason": "Aporta ilustración técnica estática con geometría común por vistas, evidencia de dimensiones, explosiones, proof y exportación SVG/PNG/PDF; incluye assets y scripts, por lo que su accionabilidad supera una guía estética. No lo cubren el pulido de impeccable ni el motion de Emil. Encaja ocasionalmente en documentación de Plant/hardware, no en desarrollo diario de una SPA. Conservar como referencia externa bajo petición; su visor autónomo y dependencias no entran en @sialos/ui ni añaden un sexto core. No ejecutado ni validados sus scripts/exports en esta auditoría; esas verificaciones corresponden a producir un dibujo concreto. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "reference",
+    "usage_7d": null,
+    "usage_30d": null
+  },
+  {
+    "name": "variant",
+    "path": "jakubkrehel/skills/skills/variant/SKILL.md",
+    "verdict": "Improve",
+    "reason": "Aporta exploración controlada en contexto real: un eje principal, variantes enlazables por URL, tabla de costes sin favorito y promoción con retirada del harness. Mantener upstream como extra explícito; se solapa con impeccable live y la vuelta de alternativas del DS, así que reutilizar la ficha y hacer solo las alternativas necesarias. La envoltura local debe limitar ejes a estructura, densidad y énfasis admitidos por tokens, sin nuevas fuentes/paletas/voz ni reemplazo de identidad. picker.md ordena usar valores y estética ajenos al DS: aislar la herramienta o usar el host local existente, sin excepciones en código productivo. Resolver better-* mediante frontend-review y ejecutar los gates locales. Uso real: desconocido; no se ha inferido desuso de la ausencia de métricas. La revisión juzga criterios y alcance; no certifica la exactitud de todas las APIs, CLIs o tablas de compatibilidad citadas.",
+    "recommended_role": "optional",
+    "usage_7d": null,
+    "usage_30d": null
+  }
+]

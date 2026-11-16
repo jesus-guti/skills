@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""Perfil frontend: comprobar, planificar e instalar sin sustituir entradas."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import re
+import shutil
+import sys
+
+ROOT = Path(__file__).resolve().parent
+PROFILE = json.loads((ROOT / 'profile.json').read_text())
+
+def source(name):
+    if name in PROFILE['core']:
+        return ROOT / 'skills' / name
+    if name in PROFILE['optional']:
+        return ROOT / 'optional' / name
+    raise ValueError(f'Skill fuera del perfil: {name}')
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def same_tree(left, right):
+    if not right.is_dir() or right.is_symlink():
+        return False
+    def files(folder):
+        return {str(p.relative_to(folder)): digest(p) for p in folder.rglob('*') if p.is_file()}
+    if any(p.is_symlink() for p in right.rglob('*')):
+        return False
+    return files(left) == files(right)
+
+def check():
+    errors = []
+    for name in PROFILE['core'] + PROFILE['optional']:
+        folder = source(name)
+        entry = folder / 'SKILL.md'
+        if not entry.is_file():
+            errors.append(f'Falta {entry}')
+            continue
+        text = entry.read_text()
+        if f'\nname: {name}\n' not in text or '\ndescription:' not in text:
+            errors.append(f'Frontmatter inválido: {entry}')
+        if list(folder.glob('references/**/SKILL.md')):
+            errors.append(f'Referencias expuestas como skills: {folder}')
+    lock = json.loads((ROOT / 'files.lock.json').read_text())
+    expected = {row['path'] for row in lock}
+    actual = {str(p.relative_to(ROOT)) for part in ['skills', 'optional']
+              for p in (ROOT / part).rglob('*') if p.is_file()}
+    if actual != expected:
+        errors.append('El contenido del paquete no coincide con la lista de archivos fijada.')
+    for row in lock:
+        path = ROOT / row['path']
+        if not path.is_file() or digest(path) != row['sha256']:
+            errors.append(f'Snapshot modificado o ausente: {row["path"]}')
+    for part in ['skills', 'optional']:
+        for path in (ROOT / part).rglob('*.md'):
+            for link in re.findall(r'\]\(([^\s)]+)(?:\s+[^)]*)?\)', path.read_text()):
+                if ':' in link or link.startswith(('#', '<')):
+                    continue
+                if not (path.parent / link.split('#')[0]).exists():
+                    errors.append(f'Enlace local roto: {path.relative_to(ROOT)} -> {link}')
+    if errors:
+        raise ValueError('\n'.join(errors))
+    print(f'OK: {len(PROFILE["core"])} principales, {len(PROFILE["optional"])} optativas; hashes correctos.')
+
+def inventory():
+    data = json.loads((ROOT / 'audit/inventory.json').read_text())
+    print(f'Inventario capturado: {data["captured_at"]}')
+    for scope in data['roots']:
+        print(f'{scope}: {sum(e["scope"] == scope for e in data["entries"])}')
+    print('Uso a 7/30 días: desconocido; inventario histórico, no telemetría.')
+
+def install(args):
+    project = args.project.expanduser().resolve()
+    if not project.is_dir():
+        raise ValueError(f'El proyecto no existe: {project}')
+    destination = project / {'codex': '.agents', 'claude': '.claude', 'cursor': '.cursor'}[args.harness] / 'skills'
+    names = PROFILE['core'] if not args.skills else list(dict.fromkeys(args.skills))
+    names = list(names)
+    for name in list(names):
+        for dependency in PROFILE.get('dependencies', {}).get(name, []):
+            if dependency not in names:
+                names.append(dependency)
+    # Validate the entire batch before any writes, including collisions and escaping symlinks.
+    plan = []
+    for name in names:
+        src = source(name)
+        target = destination / name
+        if target.exists() or target.is_symlink():
+            action = 'ok' if (target.is_symlink() and target.resolve() == src.resolve()) or same_tree(src, target) else 'conflict'
+        else:
+            action = 'copy'
+        plan.append((name, src, target, action))
+    if not destination.resolve().is_relative_to(project):
+        raise ValueError('El destino sale del proyecto mediante un enlace; elige un destino local.')
+    for name, _, target, action in plan:
+        print(f'{action:8} {name} -> {target}')
+    if any(row[3] == 'conflict' for row in plan):
+        raise ValueError('Hay entradas existentes. Conservadas todas; revisa su procedencia antes de migrarlas.')
+    if not args.apply:
+        print('Plan solamente. Añade --apply para crear las entradas nuevas.')
+        return
+    check()
+    created = []
+    try:
+        destination.mkdir(parents=True, exist_ok=True)
+        for _, src, target, action in plan:
+            if action == 'copy':
+                # Never overwrite even if another process created the target after preflight.
+                target.mkdir()
+                created.append(target)
+                shutil.copytree(src, target, dirs_exist_ok=True)
+    except Exception:
+        for target in reversed(created):
+            shutil.rmtree(target)
+        raise
+    print(f'Creadas {len(created)} skills. Las instalaciones anteriores siguen activas hasta migrarlas.')
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    commands = parser.add_subparsers(dest='command', required=True)
+    commands.add_parser('check')
+    commands.add_parser('inventory')
+    p = commands.add_parser('install', help='plan por defecto; --apply escribe nuevas entradas')
+    p.add_argument('--project', required=True, type=Path)
+    p.add_argument('--harness', choices=['codex', 'claude', 'cursor'], default='codex')
+    p.add_argument('--skills', nargs='+', help='selección explícita entre principales y optativas')
+    p.add_argument('--apply', action='store_true')
+    args = parser.parse_args()
+    try:
+        if args.command == 'check': check()
+        elif args.command == 'inventory': inventory()
+        else: install(args)
+    except (ValueError, OSError) as error:
+        print(f'error: {error}', file=sys.stderr)
+        return 1
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

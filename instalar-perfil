@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Enlaza las skills de perfil.txt en ~/.claude/skills y ~/.agents/skills.
+# Por skill y destino imprime:
+#   igual      el enlace ya apunta aquí
+#   nuevo      se creó el enlace
+#   enlazado   había una copia idéntica y se cambió por el enlace
+#   CONFLICTO  hay otra cosa con ese nombre; no se toca (con --force se mueve a
+#              ~/.local/state/skills/respaldo/<fecha>/ y se enlaza)
+# Con --dry-run no escribe nada. Salida 3 si queda algún conflicto.
+set -uo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+seco=0; forzar=0
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) seco=1 ;;
+    --force) forzar=1 ;;
+    *) echo "uso: instalar-perfil [--dry-run] [--force]" >&2; exit 1 ;;
+  esac
+done
+destinos=("$HOME/.claude/skills" "$HOME/.agents/skills")
+respaldo="$HOME/.local/state/skills/respaldo/$(date +%Y%m%d-%H%M%S)"
+conflictos=0
+
+while IFS= read -r linea; do
+  ruta="${linea%%#*}"; ruta="$(echo "$ruta" | xargs)"
+  [ -n "$ruta" ] || continue
+  origen="$ROOT/$ruta"
+  [ -f "$origen/SKILL.md" ] || { echo "FALTA $ruta (sin SKILL.md)" >&2; conflictos=$((conflictos + 1)); continue; }
+  nombre="$(basename "$ruta")"
+  for base in "${destinos[@]}"; do
+    dest="$base/$nombre"; vista="${dest/#"$HOME"/\~}"
+    if [ -L "$dest" ] && [ "$(readlink -f "$dest")" = "$(readlink -f "$origen")" ]; then
+      echo "igual $vista"
+    elif [ ! -e "$dest" ] && [ ! -L "$dest" ]; then
+      echo "nuevo $vista"
+      [ "$seco" -eq 1 ] || { mkdir -p "$base" && ln -s "$origen" "$dest"; } || exit 1
+    elif [ -d "$dest" ] && [ ! -L "$dest" ] && diff -rq "$dest" "$origen" >/dev/null 2>&1; then
+      echo "enlazado $vista (era una copia idéntica)"
+      [ "$seco" -eq 1 ] || { rm -rf "$dest" && ln -s "$origen" "$dest"; } || exit 1
+    elif [ "$forzar" -eq 1 ]; then
+      echo "reemplazado $vista (respaldo en ${respaldo/#"$HOME"/\~}/$(basename "$base")/$nombre)"
+      [ "$seco" -eq 1 ] || { mkdir -p "$respaldo/$(basename "$base")" && mv "$dest" "$respaldo/$(basename "$base")/$nombre" && ln -s "$origen" "$dest"; } || exit 1
+    else
+      echo "CONFLICTO $vista"
+      conflictos=$((conflictos + 1))
+    fi
+  done
+done < "$ROOT/perfil.txt"
+
+[ "$conflictos" -eq 0 ] || exit 3

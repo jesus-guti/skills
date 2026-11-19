@@ -1,0 +1,32 @@
+# Skills que instala `instalar-perfil`, una ruta por línea (relativa a este repo).
+# Se enlazan en ~/.claude/skills y ~/.agents/skills con el nombre de su carpeta.
+
+# Diario
+daily/skills/context7-mcp
+daily/skills/deep-research
+daily/skills/handoff
+daily/skills/icm-architect
+daily/skills/verification-loop
+
+# Frontend (perfil de frontend/profile.json, núcleo)
+frontend/skills/frontend-motion
+frontend/skills/frontend-review
+frontend/skills/frontend-workflow
+frontend/skills/impeccable
+frontend/skills/sir-jony-ive
+
+# Escritura y retro
+skills/writing-for-agents
+skills/retro
+
+# Vídeo (HyperFrames)
+skills/hyperframes
+skills/hyperframes-animation
+skills/hyperframes-audio
+skills/hyperframes-cli
+skills/hyperframes-core
+skills/hyperframes-creative
+skills/hyperframes-keyframes
+skills/hyperframes-registry
+skills/hyperframes-studio
+skills/media-use

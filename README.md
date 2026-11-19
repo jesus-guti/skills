@@ -7,6 +7,18 @@ El repositorio es la fuente canónica. Las instalaciones globales y locales
 pueden ser enlaces simbólicos, por lo que un `git pull` actualiza todas las
 skills inmediatamente.
 
+## Perfil del Taller (lo que uso a diario)
+
+```bash
+git clone git@github.com:jesus-guti/skills.git ~/github/jesus-guti-skills
+~/github/jesus-guti-skills/instalar-perfil --dry-run
+~/github/jesus-guti-skills/instalar-perfil
+```
+
+Enlaza las skills de `perfil.txt` en `~/.claude/skills` (Claude Code) y
+`~/.agents/skills` (Codex y Cursor). Un `git pull` las actualiza todas. Para
+añadir o quitar una skill, edita `perfil.txt` y vuelve a ejecutarlo.
+
 ## Primera instalación
 
 ```bash
